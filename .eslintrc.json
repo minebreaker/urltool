@@ -1,0 +1,29 @@
+{
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended"
+  ],
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "no-console": "warn",
+    "complexity": "warn",
+    "no-eval": "error",
+    "no-global-assign": "error",
+    "no-implicit-globals": "error",
+    "no-implied-eval": "error",
+    "no-labels": "error",
+    "no-return-assign": "error",
+    "no-unused-expressions": "error",
+    "no-useless-concat": "error",
+    "prefer-regex-literals": "warn",
+    "no-label-var": "error",
+    "prefer-const": "error",
+    "prefer-spread": "error",
+    "prefer-rest-params": "error"
+  }
+}
