@@ -1,4 +1,4 @@
-import _ from "lodash"
+export {} // dummy
 
 declare const browser: any
 
