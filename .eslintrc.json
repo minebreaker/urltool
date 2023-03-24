@@ -10,7 +10,7 @@
     "browser": true
   },
   "rules": {
-    "no-console": "warn",
+    "no-console": "off",
     "complexity": "warn",
     "no-eval": "error",
     "no-global-assign": "error",
