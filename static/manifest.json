@@ -6,7 +6,8 @@
   "minimum_chrome_version": "73",
   "permissions": [
     "menus",
-    "webNavigation"
+    "webNavigation",
+    "<all_urls>"
   ],
   "background": {
     "scripts": [

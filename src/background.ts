@@ -16,7 +16,9 @@ type OnClickData = {
     frameId?: number,
     menuItemId: string | number
     pageUrl?: string,
-    parentMenuItemId?: string | number
+    parentMenuItemId?: string | number,
+    linkText?: string,
+    linkUrl?: string
 }
 
 const menuIdToValueMap = new Map<string, string>()
@@ -34,7 +36,7 @@ browser.webNavigation.onCommitted.addListener(async (details: Details) => {
 
     const url = new URL(details.url)
     console.log(url)
-    console.log(url.searchParams.values())
+    console.log(url.searchParams)
 
     if (!url.searchParams.values().next()) { // maybe there's a better way?
         console.log("query param is empty")
@@ -45,7 +47,6 @@ browser.webNavigation.onCommitted.addListener(async (details: Details) => {
             enabled: false
         })
     } else {
-        console.log(url.searchParams)
         url.searchParams.forEach((value, key) => {
             const id = Math.random().toString()
             console.log(`id: ${id}`)
@@ -53,7 +54,7 @@ browser.webNavigation.onCommitted.addListener(async (details: Details) => {
             browser.menus.create({
                 id,
                 contexts: ["all"],
-                title: `${key} = ${value}`
+                title: `( ${key} = ${value} )`
             })
         })
     }
@@ -65,4 +66,55 @@ browser.menus.onClicked.addListener(async (info: OnClickData) => {
     if (value) {
         await navigator.clipboard.writeText(value)
     }
+})
+
+
+const linkMenuIdToValueMap = new Map<string, string>()
+
+browser.menus.onShown.addListener(async (info: OnClickData) => {
+    console.log("onShown")
+    console.log(info)
+
+    if (!info.linkUrl) {
+        return
+    }
+
+    const url = new URL(info.linkUrl)
+    console.log(url)
+    console.log(url.searchParams)
+
+    if (!url.searchParams.values().next()) { // maybe there's a better way?
+        console.log("query param is empty")
+        browser.menus.create({
+            id: "empty-link",
+            contexts: ["link"],
+            title: `The link does not have any query parameters.`,
+            enabled: false
+        })
+    } else {
+        url.searchParams.forEach((value, key) => {
+            const id = Math.random().toString()
+            console.log(`id: ${id}`)
+            linkMenuIdToValueMap.set(id, value)
+            browser.menus.create({
+                id,
+                contexts: ["link"],
+                title: `[ ${key} = ${value} ]`
+            })
+        })
+    }
+
+    browser.menus.refresh()
+})
+
+browser.menus.onClicked.addListener(async (info: OnClickData) => {
+    console.log("onclick")
+    const value = linkMenuIdToValueMap.get(info.menuItemId.toString())
+    if (value) {
+        await navigator.clipboard.writeText(value)
+    }
+})
+
+browser.menus.onHidden.addListener(() => {
+    linkMenuIdToValueMap.clear()
 })
